@@ -6,20 +6,24 @@ namespace ProxyManager\ProxyGenerator\AccessInterceptor\MethodGenerator;
 
 use Closure;
 use ProxyManager\Generator\MethodGenerator;
-use Zend\Code\Generator\Exception\InvalidArgumentException;
 use Zend\Code\Generator\ParameterGenerator;
 use Zend\Code\Generator\PropertyGenerator;
 
 /**
  * Implementation for {@see \ProxyManager\Proxy\AccessInterceptorInterface::setMethodSuffixInterceptor}
  * for access interceptor objects
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
  */
 class SetMethodSuffixInterceptor extends MethodGenerator
 {
     /**
      * Constructor
      *
-     * @throws InvalidArgumentException
+     * @param PropertyGenerator $suffixInterceptor
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
     public function __construct(PropertyGenerator $suffixInterceptor)
     {
@@ -31,7 +35,6 @@ class SetMethodSuffixInterceptor extends MethodGenerator
         $interceptor->setDefaultValue(null);
         $this->setParameter(new ParameterGenerator('methodName', 'string'));
         $this->setParameter($interceptor);
-        $this->setReturnType('void');
         $this->setBody('$this->' . $suffixInterceptor->getName() . '[$methodName] = $suffixInterceptor;');
     }
 }

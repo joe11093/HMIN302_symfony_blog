@@ -6,20 +6,24 @@ namespace ProxyManager\ProxyGenerator\LazyLoadingGhost\PropertyGenerator;
 
 use ProxyManager\Generator\Util\IdentifierSuffixer;
 use ProxyManager\ProxyGenerator\Util\Properties;
-use Zend\Code\Generator\Exception\InvalidArgumentException;
 use Zend\Code\Generator\PropertyGenerator;
 
 /**
  * Property that contains the initializer for a lazy object
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
  */
 class PrivatePropertiesMap extends PropertyGenerator
 {
-    public const KEY_DEFAULT_VALUE = 'defaultValue';
+    const KEY_DEFAULT_VALUE = 'defaultValue';
 
     /**
      * Constructor
      *
-     * @throws InvalidArgumentException
+     * @param Properties $properties
+     *
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
     public function __construct(Properties $properties)
     {
@@ -36,14 +40,18 @@ class PrivatePropertiesMap extends PropertyGenerator
     }
 
     /**
-     * @return array<string, array<class-string, bool>>
+     * @param Properties $properties
+     *
+     * @return int[][]|mixed[][]
      */
     private function getMap(Properties $properties) : array
     {
         $map = [];
 
         foreach ($properties->getPrivateProperties() as $property) {
-            $map[$property->getName()][$property->getDeclaringClass()->getName()] = true;
+            $propertyKey = & $map[$property->getName()];
+
+            $propertyKey[$property->getDeclaringClass()->getName()] = true;
         }
 
         return $map;

@@ -13,13 +13,15 @@ use ProxyManager\ProxyGenerator\NullObject\MethodGenerator\StaticProxyConstructo
 use ProxyManager\ProxyGenerator\Util\ProxiedMethodsFilter;
 use ReflectionClass;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\Exception\InvalidArgumentException;
 use Zend\Code\Reflection\MethodReflection;
 
 /**
  * Generator for proxies implementing {@see \ProxyManager\Proxy\NullObjectInterface}
  *
  * {@inheritDoc}
+ *
+ * @author Vincent Blanchon <blanchon.vincent@gmail.com>
+ * @license MIT
  */
 class NullObjectGenerator implements ProxyGeneratorInterface
 {
@@ -27,9 +29,9 @@ class NullObjectGenerator implements ProxyGeneratorInterface
      * {@inheritDoc}
      *
      * @throws InvalidProxiedClassException
-     * @throws InvalidArgumentException
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
-    public function generate(ReflectionClass $originalClass, ClassGenerator $classGenerator) : void
+    public function generate(ReflectionClass $originalClass, ClassGenerator $classGenerator)
     {
         CanProxyAssertion::assertClassCanBeProxied($originalClass);
 

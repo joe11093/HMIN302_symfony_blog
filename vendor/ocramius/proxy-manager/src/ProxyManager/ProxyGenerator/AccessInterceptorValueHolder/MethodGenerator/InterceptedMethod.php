@@ -6,18 +6,19 @@ namespace ProxyManager\ProxyGenerator\AccessInterceptorValueHolder\MethodGenerat
 
 use ProxyManager\Generator\MethodGenerator;
 use ProxyManager\ProxyGenerator\AccessInterceptorValueHolder\MethodGenerator\Util\InterceptorGenerator;
-use Zend\Code\Generator\Exception\InvalidArgumentException;
 use Zend\Code\Generator\PropertyGenerator;
 use Zend\Code\Reflection\MethodReflection;
-use function implode;
 
 /**
  * Method with additional pre- and post- interceptor logic in the body
+ *
+ * @author Marco Pivetta <ocramius@gmail.com>
+ * @license MIT
  */
 class InterceptedMethod extends MethodGenerator
 {
     /**
-     * @throws InvalidArgumentException
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
     public static function generateMethod(
         MethodReflection $originalMethod,
@@ -25,7 +26,7 @@ class InterceptedMethod extends MethodGenerator
         PropertyGenerator $prefixInterceptors,
         PropertyGenerator $suffixInterceptors
     ) : self {
-        /** @var self $method */
+        /* @var $method self */
         $method          = static::fromReflectionWithoutBodyAndDocBlock($originalMethod);
         $forwardedParams = [];
 

@@ -10,6 +10,9 @@ use Zend\Code\Generator\MethodGenerator;
 
 /**
  * Util class to help to generate code
+ *
+ * @author Jefersson Nathan <malukenho@phpse.net>
+ * @license MIT
  */
 final class ClassGeneratorUtils
 {

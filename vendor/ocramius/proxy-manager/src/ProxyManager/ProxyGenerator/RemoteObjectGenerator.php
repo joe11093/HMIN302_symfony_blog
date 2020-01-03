@@ -19,26 +19,24 @@ use ProxyManager\ProxyGenerator\Util\ProxiedMethodsFilter;
 use ReflectionClass;
 use ReflectionMethod;
 use Zend\Code\Generator\ClassGenerator;
-use Zend\Code\Generator\Exception\InvalidArgumentException;
 use Zend\Code\Generator\MethodGenerator;
 use Zend\Code\Reflection\MethodReflection;
-use function array_map;
-use function array_merge;
 
 /**
  * Generator for proxies implementing {@see \ProxyManager\Proxy\RemoteObjectInterface}
  *
  * {@inheritDoc}
+ *
+ * @author Vincent Blanchon <blanchon.vincent@gmail.com>
+ * @license MIT
  */
 class RemoteObjectGenerator implements ProxyGeneratorInterface
 {
     /**
      * {@inheritDoc}
      *
-     * @return void
-     *
      * @throws InvalidProxiedClassException
-     * @throws InvalidArgumentException
+     * @throws \Zend\Code\Generator\Exception\InvalidArgumentException
      */
     public function generate(ReflectionClass $originalClass, ClassGenerator $classGenerator)
     {
@@ -56,12 +54,12 @@ class RemoteObjectGenerator implements ProxyGeneratorInterface
         $classGenerator->addPropertyFromGenerator($adapter = new AdapterProperty());
 
         array_map(
-            static function (MethodGenerator $generatedMethod) use ($originalClass, $classGenerator) : void {
+            function (MethodGenerator $generatedMethod) use ($originalClass, $classGenerator) {
                 ClassGeneratorUtils::addMethodIfNotFinal($originalClass, $classGenerator, $generatedMethod);
             },
             array_merge(
                 array_map(
-                    static function (ReflectionMethod $method) use ($adapter, $originalClass) : RemoteObjectMethod {
+                    function (ReflectionMethod $method) use ($adapter, $originalClass) : RemoteObjectMethod {
                         return RemoteObjectMethod::generateMethod(
                             new MethodReflection($method->getDeclaringClass()->getName(), $method->getName()),
                             $adapter,

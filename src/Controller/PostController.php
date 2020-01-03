@@ -9,6 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Knp\Component\Pager\PaginatorInterface;
 
 /**
  * @Route("/post")
@@ -18,12 +19,34 @@ class PostController extends AbstractController
 
     // const POSTS_PER_PAGE = 3;
 
-    /**
-     * @Route("/catalog/page/{page<\d+>}", name="post_index", methods={"GET"})
+    ///**
+    // * @Route("/catalog/page/{page<\d+>}", name="post_index", methods={"GET"})
+    // */
+
+     /**
+     * @Route("/", name="post_index", methods={"GET"})
      */
-    public function index(int $page): Response
+    public function index(PaginatorInterface $paginator, Request $request): Response
     {
-        if ($page === 0)
+        $em = $this->getDoctrine()->getManager();
+        $postRepository = $em->getRepository(Post::class);
+
+        $allPostsQuery = $postRepository->createQueryBuilder('p')
+            ->getQuery();
+
+        // Paginate the results of the query
+        $posts = $paginator->paginate(
+        // Doctrine Query, not results
+            $allPostsQuery,
+            // Define the page parameter
+            $request->query->getInt('page', 1),
+            // Items per page
+            3
+        );
+
+        return $this->render('post/index.html.twig', [
+            'posts'=>$posts]);
+        /*if ($page === 0)
             $page++;
 
         return $this->render('post/index.html.twig', [
@@ -33,33 +56,8 @@ class PostController extends AbstractController
             'page' => $page
             // 'limit' => self::POSTS_PER_PAGE
             // next offset should be here to create the pagination index
-        ]);
+        ]);*/
     }
-
-    // /**
-    //  * @Route("/admin/new", name="post_new", methods={"GET","POST"})
-    //  */
-    // public function new(Request $request): Response
-    // {
-    //     $post = new Post();
-    //     $form = $this->createForm(PostType::class, $post);
-    //     $form->handleRequest($request);
-    //
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $post->setPublicationDate(new \DateTime());
-    //
-    //         $entityManager = $this->getDoctrine()->getManager();
-    //         $entityManager->persist($post);
-    //         $entityManager->flush();
-    //
-    //         return $this->redirectToRoute('post_index', ['page' => 1]);
-    //     }
-    //
-    //     return $this->render('admin/post/new.html.twig', [
-    //         'post' => $post,
-    //         'form' => $form->createView()
-    //     ]);
-    // }
 
     /**
      * @Route("/{slug}", name="post_show", methods={"GET"})
@@ -75,45 +73,4 @@ class PostController extends AbstractController
         ]);
     }
 
-    // /**
-    //  * @Route("/{slug}/edit", name="post_edit", methods={"GET","POST"})
-    //  */
-    // public function edit(Request $request, string $slug): Response
-    // {
-    //     $post = $this->getDoctrine()
-    //                  ->getRepository(Post::class)
-    //                  ->findOneBy(['slug' => $slug]);
-    //
-    //     $form = $this->createForm(PostType::class, $post);
-    //     $form->handleRequest($request);
-    //
-    //     if ($form->isSubmitted() && $form->isValid()) {
-    //         $this->getDoctrine()->getManager()->flush();
-    //
-    //         return $this->redirectToRoute('post_index', ['page' => 1]);
-    //     }
-    //
-    //     return $this->render('admin/post/edit.html.twig', [
-    //         'post' => $post,
-    //         'form' => $form->createView()
-    //     ]);
-    // }
-    //
-    // /**
-    //  * @Route("/{slug}", name="post_delete", methods={"DELETE"})
-    //  */
-    // public function delete(Request $request, string $slug): Response
-    // {
-    //     $post = $this->getDoctrine()
-    //                  ->getRepository(Post::class)
-    //                  ->findOneBy(['slug' => $slug]);
-    //
-    //     if ($this->isCsrfTokenValid('delete'.$post->getSlug(), $request->request->get('_token'))) {
-    //         $entityManager = $this->getDoctrine()->getManager();
-    //         $entityManager->remove($post);
-    //         $entityManager->flush();
-    //     }
-    //
-    //     return $this->redirectToRoute('post_index', ['page' => 1]);
-    // }
 }
